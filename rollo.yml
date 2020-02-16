@@ -11,8 +11,9 @@ wifi:
 
 captive_portal:
 
-# Enable logging
 logger:
+
+ota:
 
 script:
   - id: default_turn_off
@@ -35,8 +36,6 @@ api:
               - script.is_running: complete
             else:
               - script.execute: complete
-
-ota:
 
 binary_sensor:
 - platform: gpio

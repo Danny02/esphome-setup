@@ -1,5 +1,5 @@
 esphome:
-  name: waschkeller
+  name: foobar
   platform: ESP32
   board: nodemcu-32s
 
@@ -7,21 +7,22 @@ wifi:
   <<: !include secrets.yml
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Waschkeller Fallback Hotspot"
+    ssid: "Foobar Fallback Hotspot"
 
 <<: !include defaults.yml
+
+esp32_ble_tracker:
 
 sensor:
   - platform: dht
     pin: 4
     model: DHT22
     temperature:
-      name: "Waschzimmer Temperatur"
+      name: "Wohnzimmer Temperatur"
     humidity:
-      name: "Waschzimmer Luftfeuchtigkeit"
+      name: "Wohnzimmer Luftfeuchtigkeit"
     update_interval: 60s
 
 binary_sensor:
   - platform: status
-    name: "Waschzimmer Room Status"  
-
+    name: "Living Room Status"

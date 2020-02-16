@@ -3,20 +3,39 @@ esphome:
   platform: ESP32
   board: nodemcu-32s
 
-
-<<: !include secrets.yml
 wifi:
+  <<: !include secrets.yml 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Foobar Fallback Hotspot"
 
 captive_portal:
-
-remote_receiver:
-  pin: 14
-  dump: all
-
-# Enable logging
+api:
+ota:
 logger:
 
-ota:
+remote_receiver:
+  dump: all
+  pin:
+    number: 5
+    inverted: True
+    mode: INPUT_PULLUP
+
+remote_transmitter:
+  pin: 
+    number: 4
+    mode: OUTPUT
+  carrier_duty_percent: 50%  
+  
+switch:
+  - platform: template
+    name: LG TV On/Off
+    turn_on_action:
+      - remote_transmitter.transmit_lg:
+          data: 0x20DF10EF
+          nbits: 32
+      - remote_transmitter.transmit_jvc:
+          data: 0x20DF
+      - remote_transmitter.transmit_nec:
+          address: 0x20DF
+          command: 0x10EF

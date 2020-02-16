@@ -9,6 +9,8 @@ wifi:
   ap:
     ssid: "Bad Fallback Hotspot"
 
+<<: !include defaults.yml
+
 sensor:
   - platform: dht
     pin: 4
@@ -18,19 +20,7 @@ sensor:
     humidity:
       name: "Bad Luftfeuchtigkeit"
     update_interval: 60s
-  - platform: wifi_signal
-    name: "WiFi Signal Bad"
 
 binary_sensor:
   - platform: status
     name: "Bad Room Status"  
-
-captive_portal:
-
-# Enable logging
-logger:
-
-# Enable Home Assistant API
-api:
-
-ota:
