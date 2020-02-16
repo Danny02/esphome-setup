@@ -1,0 +1,97 @@
+esphome:
+  name: $devicename
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  <<: !include secrets.yml
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${friendly_devicename}"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+script:
+  - id: default_turn_off
+    then:
+      - delay: 30s
+      - switch.turn_off: relay
+  - id: complete
+    then:
+      - switch.turn_on: relay
+      - delay: 24s
+      - switch.turn_off: relay
+
+# Enable Home Assistant API
+api:
+  services:
+    - service: complete
+      then:
+        - if:
+            condition:
+              - script.is_running: complete
+            else:
+              - script.execute: complete
+
+ota:
+
+binary_sensor:
+- platform: gpio
+  pin:
+    number: GPIO4
+    mode: INPUT_PULLUP
+    inverted: True
+  name: "Sonoff ${friendly_devicename} Switch"
+  on_press:
+    - switch.turn_on: relay
+  on_release:
+    - if:
+        condition:
+          - script.is_running: complete
+        else:
+          - switch.turn_off: relay
+  on_double_click:
+    min_length: 50ms
+    max_length: 350ms
+    then:
+      - if:
+          condition:
+            - script.is_running: complete
+          else:
+            - script.execute: complete
+- platform: homeassistant
+  id: hassio
+  entity_id: binary_sensor.sonoff_${sibling}_relay
+  on_press:
+    - switch.turn_off: relay 
+- platform: status
+  name: "Sonoff ${friendly_devicename} Status"
+- platform: template
+  name: "Sonoff ${friendly_devicename} Relay"
+  lambda: "return id(relay).state;"
+
+
+switch:
+- platform: gpio
+  name: "Sonoff ${friendly_devicename} Relay"
+  pin: GPIO12
+  id: relay
+  on_turn_off:
+    - script.stop: complete
+  on_turn_on:
+    - script.stop: default_turn_off
+    - script.execute: default_turn_off
+
+output:
+- platform: esp8266_pwm
+  id: mini_blue_led
+  pin: GPIO13
+  inverted: True
+
+light:
+- platform: monochromatic
+  output: mini_blue_led
+  id: blue_led

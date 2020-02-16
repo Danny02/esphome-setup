@@ -1,0 +1,6 @@
+substitutions:
+  devicename: kueche_rollo_unten
+  friendly_devicename: Kueche Rollo Unten
+  sibling: kueche_rollo_oben
+
+<<: !include rollo.yml

@@ -1,0 +1,22 @@
+esphome:
+  name: foobar
+  platform: ESP32
+  board: nodemcu-32s
+
+
+<<: !include secrets.yml
+wifi:
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Foobar Fallback Hotspot"
+
+captive_portal:
+
+remote_receiver:
+  pin: 14
+  dump: all
+
+# Enable logging
+logger:
+
+ota:
